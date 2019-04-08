@@ -7,5 +7,7 @@ defmodule GrumpyCatWeb.Router do
 
   scope "/api", GrumpyCatWeb do
     pipe_through :api
+
+    resources "/companies", CompanyController
   end
 end
