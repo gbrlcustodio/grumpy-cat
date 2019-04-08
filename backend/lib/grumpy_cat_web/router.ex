@@ -9,5 +9,6 @@ defmodule GrumpyCatWeb.Router do
     pipe_through :api
 
     resources "/companies", CompanyController
+    resources "/complaints", ComplaintController
   end
 end
