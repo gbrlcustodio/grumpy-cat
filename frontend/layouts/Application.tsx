@@ -1,6 +1,8 @@
-import { Toolbar, Typography } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import React, { ReactNode } from 'react';
 
 interface IProps extends WithStyles<typeof styles> {
@@ -11,6 +13,9 @@ const styles = createStyles({
   content: {
     padding: '1rem',
   },
+  grow: {
+    flexGrow: 1,
+  },
 });
 
 const Application = ({ classes, children }: IProps) => {
@@ -18,9 +23,13 @@ const Application = ({ classes, children }: IProps) => {
     <main>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" color="inherit">
+          <Typography variant="h6" color="inherit" className={classes.grow}>
             Grumpy Cat
           </Typography>
+
+          <Button variant="raised" color="secondary" href="/complaint">
+            Complain
+          </Button>
         </Toolbar>
       </AppBar>
       <div className={classes.content}>{children}</div>
