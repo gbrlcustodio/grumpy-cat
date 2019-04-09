@@ -15,6 +15,12 @@
     "sourceMap": true,
     "strict": true,
     "target": "esnext",
+    "baseUrl": "./",
+    "paths": {
+      "layouts": ["./layouts"],
+      "components": ["./components"],
+      "types": ["./types"]
+    },
     "plugins": [
       {
         "name": "typescript-tslint-plugin",
