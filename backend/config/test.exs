@@ -16,3 +16,5 @@ config :grumpy_cat, GrumpyCat.Repo,
   database: "grumpy_cat_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :grumpy_cat, reverse_geocoding: GrumpyCatWeb.ReverseGeocoding.Mock
