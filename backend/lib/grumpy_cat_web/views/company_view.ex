@@ -11,8 +11,6 @@ defmodule GrumpyCatWeb.CompanyView do
   end
 
   def render("company.json", %{company: company}) do
-    %{id: company.id,
-      name: company.name,
-      bio: company.bio}
+    %{id: company.id, name: company.name, bio: company.bio}
   end
 end

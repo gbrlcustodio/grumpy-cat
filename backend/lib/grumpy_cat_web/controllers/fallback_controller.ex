@@ -19,4 +19,11 @@ defmodule GrumpyCatWeb.FallbackController do
     |> put_view(GrumpyCatWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, {:error, :unprocessable_entity}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(GrumpyCatWeb.ErrorView)
+    |> render(:"500")
+  end
 end

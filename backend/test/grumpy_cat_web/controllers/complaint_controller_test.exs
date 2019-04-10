@@ -4,24 +4,35 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
   alias GrumpyCat.Complaints
   alias GrumpyCat.Complaints.Complaint
 
+  import Mox
+
+  # This next line checks if the mocks have been properly called at the end of each test
+  setup :verify_on_exit!
+
   @create_attrs %{
     description: "some description",
-    country: "Brazil",
-    state: "Paraná",
-    city: "Curitiba",
+    latitude: 40.7308619,
+    longitude: -73.9871558,
     title: "some title"
   }
   @update_attrs %{
     description: "some updated description",
-    country: "Taiwan",
-    state: "Taiwan Province",
-    city: "Hsinchu",
+    latitude: -25.43698,
+    longitude: -54.58248,
     title: "some updated title"
   }
-  @invalid_attrs %{description: nil, country: nil, state: nil, city: nil, title: nil}
+  @invalid_attrs %{description: nil, latitude: nil, longitude: nil, title: nil}
 
   def fixture(:complaint) do
-    {:ok, complaint} = Complaints.create_complaint(@create_attrs)
+    {:ok, complaint} =
+      Complaints.create_complaint(%{
+        description: "some description",
+        country: "Brazil",
+        state: "Paraná",
+        city: "Foz do Iguaçu",
+        title: "some title"
+      })
+
     complaint
   end
 
@@ -38,6 +49,14 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
 
   describe "create complaint" do
     test "renders complaint when data is valid", %{conn: conn} do
+      GrumpyCatWeb.ReverseGeocoding.Mock
+      |> expect(
+        :convert,
+        fn _, _ ->
+          {:ok, %{"country" => "USA", "state" => "New York", "city" => "New York City"}}
+        end
+      )
+
       conn = post(conn, Routes.complaint_path(conn, :create), complaint: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -46,14 +65,22 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
       assert %{
                "id" => id,
                "description" => "some description",
-               "country" => "Brazil",
-               "state" => "Paraná",
-               "city" => "Curitiba",
+               "country" => "USA",
+               "state" => "New York",
+               "city" => "New York City",
                "title" => "some title"
              } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
+      GrumpyCatWeb.ReverseGeocoding.Mock
+      |> expect(
+        :convert,
+        fn _, _ ->
+          {:error, "no results found"}
+        end
+      )
+
       conn = post(conn, Routes.complaint_path(conn, :create), complaint: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
@@ -62,7 +89,18 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
   describe "update complaint" do
     setup [:create_complaint]
 
-    test "renders complaint when data is valid", %{conn: conn, complaint: %Complaint{id: id} = complaint} do
+    test "renders complaint when data is valid", %{
+      conn: conn,
+      complaint: %Complaint{id: id} = complaint
+    } do
+      GrumpyCatWeb.ReverseGeocoding.Mock
+      |> expect(
+        :convert,
+        fn _, _ ->
+          {:ok, %{"country" => "Brazil", "state" => "Paraná", "city" => "Foz do Iguaçu"}}
+        end
+      )
+
       conn = put(conn, Routes.complaint_path(conn, :update, complaint), complaint: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -71,14 +109,22 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
       assert %{
                "id" => id,
                "description" => "some updated description",
-               "country" => "Taiwan",
-               "state" => "Taiwan Province",
-               "city" => "Hsinchu",
+               "country" => "Brazil",
+               "state" => "Paraná",
+               "city" => "Foz do Iguaçu",
                "title" => "some updated title"
              } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, complaint: complaint} do
+      GrumpyCatWeb.ReverseGeocoding.Mock
+      |> expect(
+        :convert,
+        fn _, _ ->
+          {:error, "no results found"}
+        end
+      )
+
       conn = put(conn, Routes.complaint_path(conn, :update, complaint), complaint: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end

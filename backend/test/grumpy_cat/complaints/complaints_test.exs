@@ -6,8 +6,20 @@ defmodule GrumpyCat.ComplaintsTest do
   describe "complaints" do
     alias GrumpyCat.Complaints.Complaint
 
-    @valid_attrs %{description: "some description", country: "Brazil", state: "Paraná", city: "Curitiba", title: "some title"}
-    @update_attrs %{description: "some updated description", country: "Taiwan", state: "Taiwan Province", city: "Hsinchu", title: "some updated title"}
+    @valid_attrs %{
+      description: "some description",
+      country: "Brazil",
+      state: "Paraná",
+      city: "Curitiba",
+      title: "some title"
+    }
+    @update_attrs %{
+      description: "some updated description",
+      country: "Taiwan",
+      state: "Taiwan Province",
+      city: "Hsinchu",
+      title: "some updated title"
+    }
     @invalid_attrs %{description: nil, country: nil, state: nil, city: nil, title: nil}
 
     def complaint_fixture(attrs \\ %{}) do
@@ -44,7 +56,10 @@ defmodule GrumpyCat.ComplaintsTest do
 
     test "update_complaint/2 with valid data updates the complaint" do
       complaint = complaint_fixture()
-      assert {:ok, %Complaint{} = complaint} = Complaints.update_complaint(complaint, @update_attrs)
+
+      assert {:ok, %Complaint{} = complaint} =
+               Complaints.update_complaint(complaint, @update_attrs)
+
       assert complaint.description == "some updated description"
       assert complaint.country == "Taiwan"
       assert complaint.state == "Taiwan Province"

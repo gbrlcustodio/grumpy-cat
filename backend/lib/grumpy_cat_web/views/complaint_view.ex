@@ -11,11 +11,13 @@ defmodule GrumpyCatWeb.ComplaintView do
   end
 
   def render("complaint.json", %{complaint: complaint}) do
-    %{id: complaint.id,
+    %{
+      id: complaint.id,
       title: complaint.title,
       description: complaint.description,
       country: complaint.country,
       state: complaint.state,
-      city: complaint.city}
+      city: complaint.city
+    }
   end
 end
