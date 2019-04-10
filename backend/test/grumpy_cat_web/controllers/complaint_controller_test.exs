@@ -6,15 +6,19 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
 
   @create_attrs %{
     description: "some description",
-    locale: "some locale",
+    country: "Brazil",
+    state: "Paraná",
+    city: "Curitiba",
     title: "some title"
   }
   @update_attrs %{
     description: "some updated description",
-    locale: "some updated locale",
+    country: "Taiwan",
+    state: "Taiwan Province",
+    city: "Hsinchu",
     title: "some updated title"
   }
-  @invalid_attrs %{description: nil, locale: nil, title: nil}
+  @invalid_attrs %{description: nil, country: nil, state: nil, city: nil, title: nil}
 
   def fixture(:complaint) do
     {:ok, complaint} = Complaints.create_complaint(@create_attrs)
@@ -42,7 +46,9 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
       assert %{
                "id" => id,
                "description" => "some description",
-               "locale" => "some locale",
+               "country" => "Brazil",
+               "state" => "Paraná",
+               "city" => "Curitiba",
                "title" => "some title"
              } = json_response(conn, 200)["data"]
     end
@@ -65,7 +71,9 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
       assert %{
                "id" => id,
                "description" => "some updated description",
-               "locale" => "some updated locale",
+               "country" => "Taiwan",
+               "state" => "Taiwan Province",
+               "city" => "Hsinchu",
                "title" => "some updated title"
              } = json_response(conn, 200)["data"]
     end

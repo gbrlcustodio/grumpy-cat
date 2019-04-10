@@ -4,7 +4,9 @@ defmodule GrumpyCat.Complaints.Complaint do
 
   schema "complaints" do
     field :description, :string
-    field :locale, :string
+    field :country, :string
+    field :state, :string
+    field :city, :string
     field :title, :string
     field :company_id, :id
 
@@ -14,7 +16,7 @@ defmodule GrumpyCat.Complaints.Complaint do
   @doc false
   def changeset(complaint, attrs) do
     complaint
-    |> cast(attrs, [:title, :description, :locale])
-    |> validate_required([:title, :description, :locale])
+    |> cast(attrs, [:title, :description, :country, :state, :city])
+    |> validate_required([:title, :description, :country, :state, :city])
   end
 end
