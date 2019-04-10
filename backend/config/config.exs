@@ -25,6 +25,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :grumpy_cat,
+  reverse_geocoding: GrumpyCatWeb.ReverseGeocoding.OpenCage,
+  open_cage_secret: "466429f792904e9486015bf8a09175ef"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
