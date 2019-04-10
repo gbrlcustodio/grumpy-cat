@@ -14,6 +14,8 @@ defmodule GrumpyCatWeb.ComplaintView do
     %{id: complaint.id,
       title: complaint.title,
       description: complaint.description,
-      locale: complaint.locale}
+      country: complaint.country,
+      state: complaint.state,
+      city: complaint.city}
   end
 end
