@@ -6,17 +6,25 @@ defmodule GrumpyCatWeb.ComplaintController do
 
   action_fallback GrumpyCatWeb.FallbackController
 
+  @reverse_geocoding Application.get_env(:grumpy_cat, :reverse_geocoding)
+
   def index(conn, _params) do
     complaints = Complaints.list_complaints()
     render(conn, "index.json", complaints: complaints)
   end
 
-  def create(conn, %{"complaint" => complaint_params}) do
-    with {:ok, %Complaint{} = complaint} <- Complaints.create_complaint(complaint_params) do
+  def create(conn, %{
+        "complaint" => %{"latitude" => latitude, "longitude" => longitude} = complaint_params
+      }) do
+    with {:ok, location} <- @reverse_geocoding.convert(latitude, longitude),
+         {:ok, %Complaint{} = complaint} <-
+           Complaints.create_complaint(Map.merge(complaint_params, location)) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.complaint_path(conn, :show, complaint))
       |> render("show.json", complaint: complaint)
+    else
+      {:error, _reason} -> {:error, :unprocessable_entity}
     end
   end
 
@@ -25,10 +33,35 @@ defmodule GrumpyCatWeb.ComplaintController do
     render(conn, "show.json", complaint: complaint)
   end
 
+  def update(
+        conn,
+        %{
+          "complaint" =>
+            %{
+              "latitude" => latitude,
+              "longitude" => longitude
+            } = complaint
+        } = params
+      ) do
+    case @reverse_geocoding.convert(latitude, longitude) do
+      {:ok, location} ->
+        complaint =
+          Map.merge(complaint, location)
+          |> Map.delete("latitude")
+          |> Map.delete("longitude")
+
+        update(conn, Map.merge(params, %{"complaint" => complaint}))
+
+      {:error, _reason} ->
+        {:error, :unprocessable_entity}
+    end
+  end
+
   def update(conn, %{"id" => id, "complaint" => complaint_params}) do
     complaint = Complaints.get_complaint!(id)
 
-    with {:ok, %Complaint{} = complaint} <- Complaints.update_complaint(complaint, complaint_params) do
+    with {:ok, %Complaint{} = complaint} <-
+           Complaints.update_complaint(complaint, complaint_params) do
       render(conn, "show.json", complaint: complaint)
     end
   end

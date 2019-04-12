@@ -6,9 +6,21 @@ defmodule GrumpyCat.ComplaintsTest do
   describe "complaints" do
     alias GrumpyCat.Complaints.Complaint
 
-    @valid_attrs %{description: "some description", locale: "some locale", title: "some title"}
-    @update_attrs %{description: "some updated description", locale: "some updated locale", title: "some updated title"}
-    @invalid_attrs %{description: nil, locale: nil, title: nil}
+    @valid_attrs %{
+      description: "some description",
+      country: "Brazil",
+      state: "Paraná",
+      city: "Curitiba",
+      title: "some title"
+    }
+    @update_attrs %{
+      description: "some updated description",
+      country: "Taiwan",
+      state: "Taiwan Province",
+      city: "Hsinchu",
+      title: "some updated title"
+    }
+    @invalid_attrs %{description: nil, country: nil, state: nil, city: nil, title: nil}
 
     def complaint_fixture(attrs \\ %{}) do
       {:ok, complaint} =
@@ -32,7 +44,9 @@ defmodule GrumpyCat.ComplaintsTest do
     test "create_complaint/1 with valid data creates a complaint" do
       assert {:ok, %Complaint{} = complaint} = Complaints.create_complaint(@valid_attrs)
       assert complaint.description == "some description"
-      assert complaint.locale == "some locale"
+      assert complaint.country == "Brazil"
+      assert complaint.state == "Paraná"
+      assert complaint.city == "Curitiba"
       assert complaint.title == "some title"
     end
 
@@ -42,9 +56,14 @@ defmodule GrumpyCat.ComplaintsTest do
 
     test "update_complaint/2 with valid data updates the complaint" do
       complaint = complaint_fixture()
-      assert {:ok, %Complaint{} = complaint} = Complaints.update_complaint(complaint, @update_attrs)
+
+      assert {:ok, %Complaint{} = complaint} =
+               Complaints.update_complaint(complaint, @update_attrs)
+
       assert complaint.description == "some updated description"
-      assert complaint.locale == "some updated locale"
+      assert complaint.country == "Taiwan"
+      assert complaint.state == "Taiwan Province"
+      assert complaint.city == "Hsinchu"
       assert complaint.title == "some updated title"
     end
 
