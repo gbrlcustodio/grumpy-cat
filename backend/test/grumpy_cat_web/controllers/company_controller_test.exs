@@ -26,7 +26,7 @@ defmodule GrumpyCatWeb.CompanyControllerTest do
   describe "index" do
     test "lists all companies", %{conn: conn} do
       conn = get(conn, Routes.company_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200)["data"] != 0
     end
   end
 

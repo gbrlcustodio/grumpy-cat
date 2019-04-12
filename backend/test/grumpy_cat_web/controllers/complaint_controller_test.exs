@@ -1,6 +1,7 @@
 defmodule GrumpyCatWeb.ComplaintControllerTest do
   use GrumpyCatWeb.ConnCase
 
+  alias GrumpyCat.Companies
   alias GrumpyCat.Complaints
   alias GrumpyCat.Complaints.Complaint
 
@@ -24,16 +25,18 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
   @invalid_attrs %{description: nil, latitude: nil, longitude: nil, title: nil}
 
   def fixture(:complaint) do
-    {:ok, complaint} =
-      Complaints.create_complaint(%{
-        description: "some description",
-        country: "Brazil",
-        state: "Paraná",
-        city: "Foz do Iguaçu",
-        title: "some title"
-      })
-
-    complaint
+    with {:ok, company} <- create_company(),
+         {:ok, complaint} <-
+           Complaints.create_complaint(%{
+             description: "some description",
+             country: "Brazil",
+             state: "Paraná",
+             city: "Foz do Iguaçu",
+             title: "some title",
+             company_id: company.id
+           }) do
+      complaint
+    end
   end
 
   setup %{conn: conn} do
@@ -57,7 +60,13 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
         end
       )
 
-      conn = post(conn, Routes.complaint_path(conn, :create), complaint: @create_attrs)
+      {:ok, %{id: company_id, name: company_name, bio: company_bio}} = create_company()
+
+      complaint =
+        %{company_id: company_id}
+        |> Enum.into(@create_attrs)
+
+      conn = post(conn, Routes.complaint_path(conn, :create), complaint: complaint)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.complaint_path(conn, :show, id))
@@ -68,7 +77,8 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
                "country" => "USA",
                "state" => "New York",
                "city" => "New York City",
-               "title" => "some title"
+               "title" => "some title",
+               "company" => %{"id" => ^company_id, "name" => ^company_name, "bio" => ^company_bio}
              } = json_response(conn, 200)["data"]
     end
 
@@ -146,5 +156,9 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
   defp create_complaint(_) do
     complaint = fixture(:complaint)
     {:ok, complaint: complaint}
+  end
+
+  defp create_company() do
+    Companies.create_company(%{name: "some name", bio: "some bio"})
   end
 end

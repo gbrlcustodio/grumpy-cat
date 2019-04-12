@@ -9,7 +9,10 @@ defmodule GrumpyCatWeb.ComplaintController do
   @reverse_geocoding Application.get_env(:grumpy_cat, :reverse_geocoding)
 
   def index(conn, _params) do
-    complaints = Complaints.list_complaints()
+    complaints =
+      Complaints.list_complaints()
+      |> Complaints.load_complaint_assocs()
+
     render(conn, "index.json", complaints: complaints)
   end
 
@@ -29,7 +32,10 @@ defmodule GrumpyCatWeb.ComplaintController do
   end
 
   def show(conn, %{"id" => id}) do
-    complaint = Complaints.get_complaint!(id)
+    complaint =
+      Complaints.get_complaint!(id)
+      |> Complaints.load_complaint_assocs()
+
     render(conn, "show.json", complaint: complaint)
   end
 
