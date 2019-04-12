@@ -40,5 +40,7 @@ defmodule GrumpyCatWeb.Endpoint do
     key: "_grumpy_cat_key",
     signing_salt: "uRM8EWoR"
 
+  plug CORSPlug
+
   plug GrumpyCatWeb.Router
 end
