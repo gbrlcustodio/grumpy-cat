@@ -37,3 +37,5 @@ grumpy_cat-*.tar
 
 .idea
 *.iml
+
+.elixir_ls
