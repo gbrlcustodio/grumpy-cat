@@ -19,7 +19,8 @@
     "paths": {
       "layouts": ["./layouts"],
       "components": ["./components"],
-      "types": ["./types"]
+      "types": ["./types"],
+      "endpoint": ["./endpoint"]
     },
     "plugins": [
       {
