@@ -56,6 +56,20 @@ defmodule GrumpyCat.Complaints do
   end
 
   @doc """
+  Given a complaint, load its associations
+
+  ## Examples
+
+      eix> load_complaint_assocs(%Complaint{})
+      {:ok, %Complaint{company: %Company{}}}
+
+  """
+  def load_complaint_assocs(complaint, assocs \\ [:company]) do
+    complaint
+    |> Repo.preload(assocs)
+  end
+
+  @doc """
   Updates a complaint.
 
   ## Examples
