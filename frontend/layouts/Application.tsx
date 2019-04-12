@@ -27,7 +27,7 @@ const Application = ({ classes, children }: IProps) => {
             Grumpy Cat
           </Typography>
 
-          <Button variant="raised" color="secondary" href="/complaint">
+          <Button variant="contained" color="secondary" href="/complaint">
             Complain
           </Button>
         </Toolbar>
