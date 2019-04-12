@@ -24,6 +24,6 @@ defmodule GrumpyCatWeb.FallbackController do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(GrumpyCatWeb.ErrorView)
-    |> render(:"500")
+    |> render(:"422")
   end
 end
