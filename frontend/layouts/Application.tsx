@@ -3,7 +3,9 @@ import Button from '@material-ui/core/Button';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import React, { ReactNode } from 'react';
+import Link from 'next/link';
+import Router from 'next/router';
+import React, { ReactNode, useCallback } from 'react';
 
 interface IProps extends WithStyles<typeof styles> {
   children: ReactNode;
@@ -16,18 +18,28 @@ const styles = createStyles({
   grow: {
     flexGrow: 1,
   },
+  anchor: {
+    color: 'inherit',
+    textDecoration: 'none',
+  },
 });
 
 const Application = ({ classes, children }: IProps) => {
+  const complaint = useCallback(() => {
+    Router.push('/complaint').catch();
+  }, []);
+
   return (
     <main>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-            Grumpy Cat
+            <Link href="/">
+              <a className={classes.anchor}>Grumpy Cat</a>
+            </Link>
           </Typography>
 
-          <Button variant="contained" color="secondary" href="/complaint">
+          <Button variant="contained" color="secondary" onClick={complaint}>
             Complain
           </Button>
         </Toolbar>

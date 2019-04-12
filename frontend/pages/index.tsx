@@ -5,12 +5,19 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import ComplaintsFilter from 'components/ComplaintsFilter';
+import { get } from 'endpoint';
 import ApplicationLayout from 'layouts/Application';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IComplaint } from 'types/complaint';
 
 const Complaints = () => {
   const [complaints, setComplaints] = useState<IComplaint[]>([]);
+
+  useEffect(() => {
+    get('complaints')
+      .then(({ data }) => setComplaints(data))
+      .catch(e => console.error(e));
+  }, []);
 
   return (
     <ApplicationLayout>
