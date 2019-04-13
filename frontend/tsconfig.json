@@ -16,12 +16,7 @@
     "strict": true,
     "target": "esnext",
     "baseUrl": "./",
-    "paths": {
-      "layouts": ["./layouts"],
-      "components": ["./components"],
-      "types": ["./types"],
-      "endpoint": ["./endpoint"]
-    },
+    "paths": {},
     "plugins": [
       {
         "name": "typescript-tslint-plugin",

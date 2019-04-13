@@ -12,7 +12,8 @@
     "import-name": false,
     "object-literal-sort-keys": false,
     "jsx-boolean-value": false,
-    "variable-name": [true, "allow-pascal-case"]
+    "variable-name": [true, "allow-pascal-case"],
+    "align": [true, "parameters", "statements", "members", "elements"]
   },
   "rulesDirectory": []
 }
