@@ -6,13 +6,19 @@ function generateHeaders(method: 'GET' | 'POST', body?: string): RequestInit {
     body,
     mode: 'cors',
     cache: 'default',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
   };
 }
 
 export function get(path: string) {
-  return fetch(`${endpoint}/${path}`, generateHeaders('GET')).then(response => response.json());
+  return fetch(endpoint + path, generateHeaders('GET')).then(response => response.json());
 }
 
 export function post(path: string, params: any) {
-  return fetch(`${endpoint}/${path}`, generateHeaders('POST', JSON.stringify(params)));
+  return fetch(endpoint + path, generateHeaders('POST', JSON.stringify(params))).then(response =>
+    response.json(),
+  );
 }
