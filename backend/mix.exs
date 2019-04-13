@@ -43,7 +43,9 @@ defmodule GrumpyCat.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:mox, "~> 0.5.0"},
       {:cors_plug, "~> 2.0"},
-      {:distillery, "~> 2.0"}
+      {:distillery, "~> 2.0"},
+      {:earmark, "~> 1.2", only: :dev},
+      {:ex_doc, "~> 0.19", only: :dev}
     ]
   end
 
