@@ -1,0 +1,19 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-standard",
+    "tslint-react",
+    "tslint-config-prettier",
+    "tslint-config-airbnb"
+  ],
+  "jsRules": {},
+  "rules": {
+    "import-name": false,
+    "object-literal-sort-keys": false,
+    "jsx-boolean-value": false,
+    "variable-name": [true, "allow-pascal-case"],
+    "align": [true, "parameters", "statements", "members", "elements"]
+  },
+  "rulesDirectory": []
+}
