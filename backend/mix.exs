@@ -20,7 +20,7 @@ defmodule GrumpyCat.MixProject do
   def application do
     [
       mod: {GrumpyCat.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :inets]
     ]
   end
 
@@ -42,7 +42,8 @@ defmodule GrumpyCat.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:mox, "~> 0.5.0"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:distillery, "~> 2.0"}
     ]
   end
 

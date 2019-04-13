@@ -9,9 +9,7 @@ ENV APP_NAME=grumpy_cat \
 
 WORKDIR /opt/app
 
-#RUN apk update && \
-#    apk upgrade --no-cache && \
-#    apk add --no-cache git build-base
+RUN apk add --no-cache bash erlang-inets
 
 RUN mix local.hex --force && \
     mix local.rebar --force
@@ -22,6 +20,8 @@ RUN mix deps.get --only ${MIX_ENV}
 
 # Recompiles if code has changed
 COPY . .
-RUN mix compile --force
+RUN mix release --env ${MIX_ENV}
 
 EXPOSE 4000
+
+CMD ["./start.sh"]
