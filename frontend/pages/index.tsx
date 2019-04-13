@@ -7,22 +7,33 @@ import TableRow from '@material-ui/core/TableRow';
 import ComplaintsFilter from 'components/ComplaintsFilter';
 import { get } from 'endpoint';
 import ApplicationLayout from 'layouts/Application';
-import React, { useEffect, useState } from 'react';
-import { IComplaint } from 'types/complaint';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const Complaints = () => {
-  const [complaints, setComplaints] = useState<IComplaint[]>([]);
+  const [complaints, setComplaints] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const handleSubmitFilters = useCallback(async ({ company, grouping, locale }) => {
+    await get(`/complaints?company_id=${company}&grouping=${grouping}&locale=${locale}`).then(
+      ({ data }) => setComplaints(data),
+    );
+  }, []);
 
   useEffect(() => {
-    get('complaints')
+    get('/complaints')
       .then(({ data }) => setComplaints(data))
-      .catch(e => console.error(e));
+      .catch();
+  }, []);
+
+  useEffect(() => {
+    get('/companies')
+      .then(({ data }) => setCompanies(data))
+      .catch();
   }, []);
 
   return (
     <ApplicationLayout>
       <Paper>
-        <ComplaintsFilter />
+        <ComplaintsFilter companies={companies} onSubmit={handleSubmitFilters} />
       </Paper>
       <Paper>
         <Table>
@@ -34,11 +45,11 @@ const Complaints = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {complaints.map(complaint => (
-              <TableRow key={complaint.id}>
-                <TableCell>{complaint.title}</TableCell>
-                <TableCell>{complaint.description}</TableCell>
-                <TableCell>{complaint.company.name}</TableCell>
+            {complaints.map(({ id, title, description, company: { name } }) => (
+              <TableRow key={id}>
+                <TableCell>{title}</TableCell>
+                <TableCell>{description}</TableCell>
+                <TableCell>{name}</TableCell>
               </TableRow>
             ))}
           </TableBody>

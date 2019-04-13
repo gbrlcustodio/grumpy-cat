@@ -1,105 +1,104 @@
-import FormControl from '@material-ui/core/FormControl';
+import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import SelectField from 'components/SelectField';
-import React, { useCallback, useReducer } from 'react';
+import classNames from 'classnames';
+import { Field, Form, Formik, FormikActions, FormikProps } from 'formik';
+import React, { useCallback } from 'react';
+import { ICompany } from 'types/company';
+import FormikField from './FormikField';
 
-interface IState {
-  company_id: string;
-  grouped_by: string;
-  locale: string;
+interface IProps extends WithStyles<typeof styles> {
+  companies: ICompany[];
+  onSubmit: (fields: Fields) => Promise<void>;
 }
 
-type Action =
-  | { type: 'change_company'; company_id: string }
-  | { type: 'change_grouping'; grouped_by: string };
-
-const initialState: IState = {
-  company_id: '',
-  grouped_by: '',
+const initialValues = {
+  company: '',
+  grouping: '',
   locale: '',
 };
 
-function reducer(state: IState, action: Action): IState {
-  switch (action.type) {
-    case 'change_company':
-      return { ...state, company_id: action.company_id };
-    case 'change_grouping':
-      return { ...state, grouped_by: action.grouped_by };
-    default:
-      return state;
-  }
-}
+type Fields = typeof initialValues;
 
-interface IProps extends WithStyles<typeof styles> {}
+const ComplaintsFilter = ({ companies, classes, onSubmit }: IProps) => {
+  const handleSubmit = useCallback((field: Fields, { setSubmitting }: FormikActions<Fields>) => {
+    setSubmitting(true);
 
-const ComplaintsFilter = ({ classes }: IProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const handleChangeCompany = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      dispatch({ type: 'change_company', company_id: event.target.value });
-    },
-    [state.company_id]
-  );
-
-  const handleChangeGrouping = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      dispatch({
-        type: 'change_grouping',
-        grouped_by: event.target.value,
-      });
-    },
-    [state.grouped_by]
-  );
+    onSubmit(field)
+      .then(() => setSubmitting(false))
+      .catch();
+  }, []);
 
   return (
-    <form className={classes.container}>
-      <FormControl variant="outlined" className={classes.control}>
-        <SelectField
-          name="company_id"
-          label="Company"
-          value={state.company_id}
-          onChange={handleChangeCompany}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-        </SelectField>
-      </FormControl>
-      <FormControl variant="outlined" className={classes.control}>
-        <SelectField
-          name="grouped_by"
-          label="Grouped by"
-          value={state.grouped_by}
-          onChange={handleChangeGrouping}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value="country">Country</MenuItem>
-          <MenuItem value="state">State</MenuItem>
-          <MenuItem value="city">City</MenuItem>
-        </SelectField>
-      </FormControl>
-      <FormControl variant="outlined" className={classes.control}>
-        <TextField variant="outlined" value={state.locale} label="Locale" />
-      </FormControl>
-    </form>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      {({ isSubmitting, values }: FormikProps<Fields>) => (
+        <Form className={classes.container}>
+          <Field
+            component={FormikField}
+            select
+            name="company"
+            label="Company"
+            className={classes.control}
+            variant="outlined"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {companies &&
+              companies.map(({ id, name }) => (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              ))}
+          </Field>
+          <Field
+            component={FormikField}
+            select
+            name="grouping"
+            label="Grouped by"
+            className={classes.control}
+            variant="outlined"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value="country">Country</MenuItem>
+            <MenuItem value="state">State</MenuItem>
+            <MenuItem value="city">City</MenuItem>
+          </Field>
+          <Field
+            component={FormikField}
+            variant="outlined"
+            name="locale"
+            label="Locale"
+            className={classNames(classes.control, classes.searchField)}
+            disabled={!values.grouping}
+          />
+          <Button type="submit" className={classes.searchButton} disabled={isSubmitting}>
+            SEARCH
+          </Button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
 const styles = createStyles({
   container: {
-    padding: '0.5rem',
+    padding: '1rem',
     marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
-    gap: '5px',
+    gap: '1rem',
   },
   control: {
     minWidth: 150,
+  },
+  searchField: {
+    width: '50%',
+  },
+  searchButton: {
+    marginLeft: 'auto',
   },
 });
 
