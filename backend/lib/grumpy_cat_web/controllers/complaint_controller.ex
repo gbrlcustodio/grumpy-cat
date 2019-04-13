@@ -8,9 +8,9 @@ defmodule GrumpyCatWeb.ComplaintController do
 
   @reverse_geocoding Application.get_env(:grumpy_cat, :reverse_geocoding)
 
-  def index(conn, _params) do
+  def index(conn, params) do
     complaints =
-      Complaints.list_complaints()
+      Complaints.list_complaints(params)
       |> Complaints.load_complaint_assocs()
 
     render(conn, "index.json", complaints: complaints)

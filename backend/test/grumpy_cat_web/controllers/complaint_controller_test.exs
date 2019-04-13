@@ -44,8 +44,52 @@ defmodule GrumpyCatWeb.ComplaintControllerTest do
   end
 
   describe "index" do
-    test "lists all complaints", %{conn: conn} do
+    setup [:create_complaint]
+
+    test "lists all complaints", %{conn: conn, complaint: complaint} do
       conn = get(conn, Routes.complaint_path(conn, :index))
+      complaint = Complaints.load_complaint_assocs(complaint)
+
+      assert json_response(conn, 200)["data"] == [
+               %{
+                 "id" => complaint.id,
+                 "title" => complaint.title,
+                 "description" => complaint.description,
+                 "city" => complaint.city,
+                 "state" => complaint.state,
+                 "country" => complaint.country,
+                 "company" => %{
+                   "id" => complaint.company.id,
+                   "name" => complaint.company.name,
+                   "bio" => complaint.company.bio
+                 }
+               }
+             ]
+    end
+
+    test "fiters complaints based on query params", %{conn: conn, complaint: complaint} do
+      conn = get(conn, Routes.complaint_path(conn, :index), %{company_id: complaint.company_id})
+      complaint = Complaints.load_complaint_assocs(complaint)
+
+      assert json_response(conn, 200)["data"] == [
+               %{
+                 "id" => complaint.id,
+                 "title" => complaint.title,
+                 "description" => complaint.description,
+                 "city" => complaint.city,
+                 "state" => complaint.state,
+                 "country" => complaint.country,
+                 "company" => %{
+                   "id" => complaint.company.id,
+                   "name" => complaint.company.name,
+                   "bio" => complaint.company.bio
+                 }
+               }
+             ]
+    end
+
+    test "lists nothing when invalid filters is provided", %{conn: conn} do
+      conn = get(conn, Routes.complaint_path(conn, :index), %{company_id: 1})
       assert json_response(conn, 200)["data"] == []
     end
   end

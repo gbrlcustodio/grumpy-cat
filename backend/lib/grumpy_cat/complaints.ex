@@ -13,13 +13,56 @@ defmodule GrumpyCat.Complaints do
 
   ## Examples
 
-      iex> list_complaints()
+      iex> list_complaints(params)
       [%Complaint{}, ...]
 
   """
-  def list_complaints do
-    Repo.all(Complaint)
+  def list_complaints(params \\ %{}) do
+    Complaint
+    |> by_company(params)
+    |> by_locale(params)
+    |> Repo.all()
   end
+
+  @doc """
+  Given a query, filters it by company_id
+
+  ## Examples
+
+      iex> Complaint |> by_company(%{"company_id => 1"})
+      [%Complaint{}, ...]
+
+  """
+  def by_company(query, %{"company_id" => company_id}) when not is_nil(company_id) do
+    from queryable in query, where: queryable.company_id == ^company_id
+  end
+
+  def by_company(query, _params), do: query
+
+  @doc """
+  Given a query, filters it by country, state or city
+
+  ## Examples
+
+      iex> Complaint |> by_locale(%{"grouping" => "country", "locale" => "Brazil"})
+      [%Complaint{}, ...]
+
+  """
+  def by_locale(query, %{"grouping" => "country", "locale" => locale}) do
+    from queryable in query, where: ilike(queryable.country, ^anywhere(locale))
+  end
+
+  def by_locale(query, %{"grouping" => "state", "locale" => locale}) do
+    from queryable in query, where: ilike(queryable.state, ^anywhere(locale))
+  end
+
+  def by_locale(query, %{"grouping" => "city", "locale" => locale}) do
+    from queryable in query, where: ilike(queryable.city, ^anywhere(locale))
+  end
+
+  def by_locale(query, _params), do: query
+
+  defp anywhere(expression), do: "%#{expression}%"
 
   @doc """
   Gets a single complaint.
