@@ -35,7 +35,12 @@ const Application = ({ classes, children }: IProps) => {
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.grow}>
             <Link href="/">
-              <a className={classes.anchor}>Grumpy Cat</a>
+              <img
+                src="/static/logo.png"
+                alt="grumpy cat"
+                height="50px"
+                style={{ cursor: 'pointer' }}
+              />
             </Link>
           </Typography>
 
