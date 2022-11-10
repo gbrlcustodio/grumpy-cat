@@ -17,7 +17,7 @@
     "@material-ui/icons": "^3.0.2",
     "classnames": "^2.2.6",
     "formik": "^1.5.2",
-    "next": "^8.0.3",
+    "next": "^13.0.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-jss": "^8.6.1",
